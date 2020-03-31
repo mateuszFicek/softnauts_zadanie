@@ -26,25 +26,35 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 3;
-  bool isLoaded = false;
-  List<Planet> _planets = [];
-
   @override
   void initState() {
     super.initState();
-    // getExoplanet().then((planets) {
-    //   setState(() {
-    //     _planets = planets;
-    //     isLoaded = true;
-    //   });
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ExoplanetsListaPage(),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Zadanie - Softnauts'),
+          centerTitle: true,
+          bottom: TabBar(
+            tabs: <Widget>[
+              Tab(
+                child: Text('Exoplanets'),
+              ),
+              Tab(
+                child: Text('Activities'),
+              )
+            ],
+          ),
+        ),
+        body: TabBarView(children: [
+          ExoplanetsListaPage(),
+          Center(child: Text('Activities...')),
+        ]),
+      ),
     );
   }
 }

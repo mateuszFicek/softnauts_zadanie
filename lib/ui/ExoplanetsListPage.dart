@@ -29,9 +29,6 @@ class _ExoplanetsListaPageState extends State<ExoplanetsListaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Paginated List App'),
-      ),
       body: BlocBuilder(
         bloc: _listBloc,
         builder: (context, ExoplanetState state) {
@@ -48,7 +45,7 @@ class _ExoplanetsListaPageState extends State<ExoplanetsListaPage> {
                 itemBuilder: (context, index) {
                   return index >= state.results.length
                       ? _buildLoaderListItem()
-                      : _buildDataListItem(index, state.results[index]);
+                      : _buildDataListItem(index + 1, state.results[index]);
                 },
               ),
             );
