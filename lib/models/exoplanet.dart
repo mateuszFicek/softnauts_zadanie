@@ -5,15 +5,14 @@ import 'package:built_value/serializer.dart';
 part 'exoplanet.g.dart';
 
 abstract class ExoplanetState
-    implements Built<ExoplanetState, ExoplanetBuilder> {
+    implements Built<ExoplanetState, ExoplanetStateBuilder> {
   BuiltList<Planet> get results;
-
   ExoplanetState._();
 
-  factory ExoplanetState([void Function(ExoplanetBuilder) updates]) =
-      _$Exoplanet;
-  static Serializer<ExoplanetState> get serializer => _$exoplanetSerializer;
-
+  factory ExoplanetState([void Function(ExoplanetStateBuilder) updates]) =
+      _$ExoplanetState;
+  static Serializer<ExoplanetState> get serializer =>
+      _$exoplanetStateSerializer;
   factory ExoplanetState.initial() {
     return ExoplanetState((b) => b..results.replace(BuiltList<Planet>()));
   }

@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kiwi/kiwi.dart' as kiwi;
-import 'package:zadanie_flutter_softnauts/bloc/exoplanets_bloc.dart';
-import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
+import 'package:zadanie_flutter_softnauts/bloc/activities_bloc.dart';
+import 'package:zadanie_flutter_softnauts/models/activity.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
-class ExoplanetsListaPage extends StatefulWidget {
+class ActivitiesListPage extends StatefulWidget {
   @override
-  _ExoplanetsListaPageState createState() => _ExoplanetsListaPageState();
+  _ActivitiesListPageState createState() => _ActivitiesListPageState();
 }
 
-class _ExoplanetsListaPageState extends State<ExoplanetsListaPage>
-    with AutomaticKeepAliveClientMixin<ExoplanetsListaPage> {
-  final _listBloc = ExoplanetBloc(ExoplanetDataSource());
+class _ActivitiesListPageState extends State<ActivitiesListPage> {
+  final _listBloc = ActivitiesBloc(ActivitiesDataSource());
   final _scrollController = ScrollController();
-  @override
-  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
@@ -33,8 +30,9 @@ class _ExoplanetsListaPageState extends State<ExoplanetsListaPage>
     return Scaffold(
       body: BlocBuilder(
         bloc: _listBloc,
-        builder: (context, ExoplanetState state) {
+        builder: (context, ActivityState state) {
           if (state.results.length == 0) {
+            print("Results are null");
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -66,7 +64,7 @@ class _ExoplanetsListaPageState extends State<ExoplanetsListaPage>
     return false;
   }
 
-  int calculateListItemCount(ExoplanetState state) {
+  int calculateListItemCount(ActivityState state) {
     return state.results.length;
   }
 
@@ -76,13 +74,16 @@ class _ExoplanetsListaPageState extends State<ExoplanetsListaPage>
     );
   }
 
-  Widget _buildDataListItem(int index, Planet item) {
-    return ListTile(
-      leading: Text(index.toString(),
-          style: TextStyle(fontSize: 20, color: Colors.grey)),
-      title: Text(
-        item.name,
-        style: TextStyle(color: Colors.black, fontSize: 20),
+  Widget _buildDataListItem(int index, Activity item) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: ListTile(
+        leading: IconButton(icon: Icon(Icons.favorite_border), onPressed: null),
+        title: Text(
+          item.target_name.toString(),
+          style: TextStyle(color: Colors.black, fontSize: 20),
+        ),
+        subtitle: Text("${item.creation_date}\n${item.date}"),
       ),
     );
   }

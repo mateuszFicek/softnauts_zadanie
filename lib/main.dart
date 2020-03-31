@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
+import 'package:zadanie_flutter_softnauts/ui/ActivitiesListPage.dart';
 import 'package:zadanie_flutter_softnauts/ui/ExoplanetsListPage.dart';
 
 void main() => runApp(MyApp());
@@ -50,10 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: TabBarView(children: [
-          ExoplanetsListaPage(),
-          Center(child: Text('Activities...')),
-        ]),
+        body:
+            TabBarView(children: [ExoplanetsListaPage(), ActivitiesListPage()]),
       ),
     );
   }

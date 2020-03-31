@@ -6,14 +6,16 @@ part of 'exoplanet.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<ExoplanetState> _$exoplanetSerializer = new _$ExoplanetSerializer();
+Serializer<ExoplanetState> _$exoplanetStateSerializer =
+    new _$ExoplanetStateSerializer();
 Serializer<Planet> _$planetSerializer = new _$PlanetSerializer();
 
-class _$ExoplanetSerializer implements StructuredSerializer<ExoplanetState> {
+class _$ExoplanetStateSerializer
+    implements StructuredSerializer<ExoplanetState> {
   @override
-  final Iterable<Type> types = const [ExoplanetState, _$Exoplanet];
+  final Iterable<Type> types = const [ExoplanetState, _$ExoplanetState];
   @override
-  final String wireName = 'Exoplanet';
+  final String wireName = 'ExoplanetState';
 
   @override
   Iterable<Object> serialize(Serializers serializers, ExoplanetState object,
@@ -32,7 +34,7 @@ class _$ExoplanetSerializer implements StructuredSerializer<ExoplanetState> {
   ExoplanetState deserialize(
       Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ExoplanetBuilder();
+    final result = new ExoplanetStateBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -92,25 +94,26 @@ class _$PlanetSerializer implements StructuredSerializer<Planet> {
   }
 }
 
-class _$Exoplanet extends ExoplanetState {
+class _$ExoplanetState extends ExoplanetState {
   @override
   final BuiltList<Planet> results;
 
-  factory _$Exoplanet([void Function(ExoplanetBuilder) updates]) =>
-      (new ExoplanetBuilder()..update(updates)).build();
+  factory _$ExoplanetState([void Function(ExoplanetStateBuilder) updates]) =>
+      (new ExoplanetStateBuilder()..update(updates)).build();
 
-  _$Exoplanet._({this.results}) : super._() {
+  _$ExoplanetState._({this.results}) : super._() {
     if (results == null) {
-      throw new BuiltValueNullFieldError('Exoplanet', 'results');
+      throw new BuiltValueNullFieldError('ExoplanetState', 'results');
     }
   }
 
   @override
-  ExoplanetState rebuild(void Function(ExoplanetBuilder) updates) =>
+  ExoplanetState rebuild(void Function(ExoplanetStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ExoplanetBuilder toBuilder() => new ExoplanetBuilder()..replace(this);
+  ExoplanetStateBuilder toBuilder() =>
+      new ExoplanetStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -125,22 +128,24 @@ class _$Exoplanet extends ExoplanetState {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Exoplanet')..add('results', results))
+    return (newBuiltValueToStringHelper('ExoplanetState')
+          ..add('results', results))
         .toString();
   }
 }
 
-class ExoplanetBuilder implements Builder<ExoplanetState, ExoplanetBuilder> {
-  _$Exoplanet _$v;
+class ExoplanetStateBuilder
+    implements Builder<ExoplanetState, ExoplanetStateBuilder> {
+  _$ExoplanetState _$v;
 
   ListBuilder<Planet> _results;
   ListBuilder<Planet> get results =>
       _$this._results ??= new ListBuilder<Planet>();
   set results(ListBuilder<Planet> results) => _$this._results = results;
 
-  ExoplanetBuilder();
+  ExoplanetStateBuilder();
 
-  ExoplanetBuilder get _$this {
+  ExoplanetStateBuilder get _$this {
     if (_$v != null) {
       _results = _$v.results?.toBuilder();
       _$v = null;
@@ -153,19 +158,19 @@ class ExoplanetBuilder implements Builder<ExoplanetState, ExoplanetBuilder> {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$Exoplanet;
+    _$v = other as _$ExoplanetState;
   }
 
   @override
-  void update(void Function(ExoplanetBuilder) updates) {
+  void update(void Function(ExoplanetStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$Exoplanet build() {
-    _$Exoplanet _$result;
+  _$ExoplanetState build() {
+    _$ExoplanetState _$result;
     try {
-      _$result = _$v ?? new _$Exoplanet._(results: results.build());
+      _$result = _$v ?? new _$ExoplanetState._(results: results.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -173,7 +178,7 @@ class ExoplanetBuilder implements Builder<ExoplanetState, ExoplanetBuilder> {
         results.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'Exoplanet', _$failedField, e.toString());
+            'ExoplanetState', _$failedField, e.toString());
       }
       rethrow;
     }
