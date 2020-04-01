@@ -55,7 +55,6 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
               bloc: _listBloc,
               builder: (context, ActivityState state) {
                 if (state.results.length == 0) {
-                  print("Results are null");
                   return Center(
                     child: CircularProgressIndicator(),
                   );
@@ -117,10 +116,10 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
           child: Row(
             children: [
               IconButton(icon: Icon(Icons.favorite_border), onPressed: () {}),
-              SizedBox(width: 6),
+              SizedBox(width: 10),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
-                  item.target_name,
+                  item.target_name != "" ? item.target_name : "No name given..",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
