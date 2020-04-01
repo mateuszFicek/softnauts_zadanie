@@ -26,14 +26,23 @@ abstract class ActivityState
 }
 
 abstract class Activity implements Built<Activity, ActivityBuilder> {
+  @nullable
   int get id;
+  @nullable
   String get creation_date;
+  @nullable
   String get date;
-  // BuiltList<ActivityLink> get links;
+  @nullable
+  BuiltList<ActivityLink> get links;
+  @nullable
   String get title;
+  @nullable
   String get content;
+  @nullable
   String get label;
+  @nullable
   String get profile;
+  @nullable
   String get satellite;
   @nullable
   String get observing_site;

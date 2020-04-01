@@ -8,6 +8,7 @@ part of 'serializers.dart';
 
 Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Activity.serializer)
+      ..add(ActivityLink.serializer)
       ..add(ActivityState.serializer)
       ..add(Coords.serializer)
       ..add(ExoplanetState.serializer)
@@ -17,6 +18,9 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Activity)]),
           () => new ListBuilder<Activity>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(ActivityLink)]),
+          () => new ListBuilder<ActivityLink>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Person)]),
           () => new ListBuilder<Person>())

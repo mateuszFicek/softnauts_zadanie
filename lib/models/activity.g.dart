@@ -68,30 +68,62 @@ class _$ActivitySerializer implements StructuredSerializer<Activity> {
   @override
   Iterable<Object> serialize(Serializers serializers, Activity object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'id',
-      serializers.serialize(object.id, specifiedType: const FullType(int)),
-      'creation_date',
-      serializers.serialize(object.creation_date,
-          specifiedType: const FullType(String)),
-      'date',
-      serializers.serialize(object.date, specifiedType: const FullType(String)),
-      'title',
-      serializers.serialize(object.title,
-          specifiedType: const FullType(String)),
-      'content',
-      serializers.serialize(object.content,
-          specifiedType: const FullType(String)),
-      'label',
-      serializers.serialize(object.label,
-          specifiedType: const FullType(String)),
-      'profile',
-      serializers.serialize(object.profile,
-          specifiedType: const FullType(String)),
-      'satellite',
-      serializers.serialize(object.satellite,
-          specifiedType: const FullType(String)),
-    ];
+    final result = <Object>[];
+    if (object.id != null) {
+      result
+        ..add('id')
+        ..add(serializers.serialize(object.id,
+            specifiedType: const FullType(int)));
+    }
+    if (object.creation_date != null) {
+      result
+        ..add('creation_date')
+        ..add(serializers.serialize(object.creation_date,
+            specifiedType: const FullType(String)));
+    }
+    if (object.date != null) {
+      result
+        ..add('date')
+        ..add(serializers.serialize(object.date,
+            specifiedType: const FullType(String)));
+    }
+    if (object.links != null) {
+      result
+        ..add('links')
+        ..add(serializers.serialize(object.links,
+            specifiedType: const FullType(
+                BuiltList, const [const FullType(ActivityLink)])));
+    }
+    if (object.title != null) {
+      result
+        ..add('title')
+        ..add(serializers.serialize(object.title,
+            specifiedType: const FullType(String)));
+    }
+    if (object.content != null) {
+      result
+        ..add('content')
+        ..add(serializers.serialize(object.content,
+            specifiedType: const FullType(String)));
+    }
+    if (object.label != null) {
+      result
+        ..add('label')
+        ..add(serializers.serialize(object.label,
+            specifiedType: const FullType(String)));
+    }
+    if (object.profile != null) {
+      result
+        ..add('profile')
+        ..add(serializers.serialize(object.profile,
+            specifiedType: const FullType(String)));
+    }
+    if (object.satellite != null) {
+      result
+        ..add('satellite')
+        ..add(serializers.serialize(object.satellite,
+            specifiedType: const FullType(String)));
+    }
     if (object.observing_site != null) {
       result
         ..add('observing_site')
@@ -171,6 +203,12 @@ class _$ActivitySerializer implements StructuredSerializer<Activity> {
         case 'date':
           result.date = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
+          break;
+        case 'links':
+          result.links.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(ActivityLink)]))
+              as BuiltList<Object>);
           break;
         case 'title':
           result.title = serializers.deserialize(value,
@@ -611,6 +649,8 @@ class _$Activity extends Activity {
   @override
   final String date;
   @override
+  final BuiltList<ActivityLink> links;
+  @override
   final String title;
   @override
   final String content;
@@ -646,6 +686,7 @@ class _$Activity extends Activity {
       {this.id,
       this.creation_date,
       this.date,
+      this.links,
       this.title,
       this.content,
       this.label,
@@ -660,32 +701,7 @@ class _$Activity extends Activity {
       this.coordinates,
       this.organisation,
       this.collaboration})
-      : super._() {
-    if (id == null) {
-      throw new BuiltValueNullFieldError('Activity', 'id');
-    }
-    if (creation_date == null) {
-      throw new BuiltValueNullFieldError('Activity', 'creation_date');
-    }
-    if (date == null) {
-      throw new BuiltValueNullFieldError('Activity', 'date');
-    }
-    if (title == null) {
-      throw new BuiltValueNullFieldError('Activity', 'title');
-    }
-    if (content == null) {
-      throw new BuiltValueNullFieldError('Activity', 'content');
-    }
-    if (label == null) {
-      throw new BuiltValueNullFieldError('Activity', 'label');
-    }
-    if (profile == null) {
-      throw new BuiltValueNullFieldError('Activity', 'profile');
-    }
-    if (satellite == null) {
-      throw new BuiltValueNullFieldError('Activity', 'satellite');
-    }
-  }
+      : super._();
 
   @override
   Activity rebuild(void Function(ActivityBuilder) updates) =>
@@ -701,6 +717,7 @@ class _$Activity extends Activity {
         id == other.id &&
         creation_date == other.creation_date &&
         date == other.date &&
+        links == other.links &&
         title == other.title &&
         content == other.content &&
         label == other.label &&
@@ -736,12 +753,14 @@ class _$Activity extends Activity {
                                                             $jc(
                                                                 $jc(
                                                                     $jc(
-                                                                        0,
-                                                                        id
+                                                                        $jc(
+                                                                            0,
+                                                                            id
+                                                                                .hashCode),
+                                                                        creation_date
                                                                             .hashCode),
-                                                                    creation_date
-                                                                        .hashCode),
-                                                                date.hashCode),
+                                                                    date.hashCode),
+                                                                links.hashCode),
                                                             title.hashCode),
                                                         content.hashCode),
                                                     label.hashCode),
@@ -764,6 +783,7 @@ class _$Activity extends Activity {
           ..add('id', id)
           ..add('creation_date', creation_date)
           ..add('date', date)
+          ..add('links', links)
           ..add('title', title)
           ..add('content', content)
           ..add('label', label)
@@ -797,6 +817,11 @@ class ActivityBuilder implements Builder<Activity, ActivityBuilder> {
   String _date;
   String get date => _$this._date;
   set date(String date) => _$this._date = date;
+
+  ListBuilder<ActivityLink> _links;
+  ListBuilder<ActivityLink> get links =>
+      _$this._links ??= new ListBuilder<ActivityLink>();
+  set links(ListBuilder<ActivityLink> links) => _$this._links = links;
 
   String _title;
   String get title => _$this._title;
@@ -865,6 +890,7 @@ class ActivityBuilder implements Builder<Activity, ActivityBuilder> {
       _id = _$v.id;
       _creation_date = _$v.creation_date;
       _date = _$v.date;
+      _links = _$v.links?.toBuilder();
       _title = _$v.title;
       _content = _$v.content;
       _label = _$v.label;
@@ -906,6 +932,7 @@ class ActivityBuilder implements Builder<Activity, ActivityBuilder> {
               id: id,
               creation_date: creation_date,
               date: date,
+              links: _links?.build(),
               title: title,
               content: content,
               label: label,
@@ -923,6 +950,9 @@ class ActivityBuilder implements Builder<Activity, ActivityBuilder> {
     } catch (_) {
       String _$failedField;
       try {
+        _$failedField = 'links';
+        _links?.build();
+
         _$failedField = 'programme';
         _programme?.build();
 
