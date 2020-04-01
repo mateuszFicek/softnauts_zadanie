@@ -5,13 +5,13 @@ import 'package:zadanie_flutter_softnauts/bloc/exoplanets_bloc.dart';
 import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
-class ExoplanetsListaPage extends StatefulWidget {
+class ExoplanetsListPage extends StatefulWidget {
   @override
-  _ExoplanetsListaPageState createState() => _ExoplanetsListaPageState();
+  _ExoplanetsListPageState createState() => _ExoplanetsListPageState();
 }
 
-class _ExoplanetsListaPageState extends State<ExoplanetsListaPage>
-    with AutomaticKeepAliveClientMixin<ExoplanetsListaPage> {
+class _ExoplanetsListPageState extends State<ExoplanetsListPage>
+    with AutomaticKeepAliveClientMixin<ExoplanetsListPage> {
   final _listBloc = ExoplanetBloc(ExoplanetDataSource());
   final _scrollController = ScrollController();
   @override

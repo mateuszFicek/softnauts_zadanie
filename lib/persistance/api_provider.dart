@@ -33,10 +33,8 @@ class ActivitiesDataSource {
     final _activitiesUrl =
         "https://api.arcsecond.io/activities/?page_size=20&page=$_shownPagesCount&format=json";
     final response = await http.get(Uri.parse(_activitiesUrl));
-    print(response.statusCode);
     ActivityState activityState = serializers.deserializeWith(
         ActivityState.serializer, json.decode(response.body));
-    print(activityState);
     return BuiltList.of(List.from(activityState.results));
   }
 }

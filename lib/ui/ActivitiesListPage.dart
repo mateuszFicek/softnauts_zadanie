@@ -9,10 +9,12 @@ class ActivitiesListPage extends StatefulWidget {
   _ActivitiesListPageState createState() => _ActivitiesListPageState();
 }
 
-class _ActivitiesListPageState extends State<ActivitiesListPage> {
+class _ActivitiesListPageState extends State<ActivitiesListPage>
+    with AutomaticKeepAliveClientMixin<ActivitiesListPage> {
   final _listBloc = ActivitiesBloc(ActivitiesDataSource());
   final _scrollController = ScrollController();
-
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
@@ -75,15 +77,31 @@ class _ActivitiesListPageState extends State<ActivitiesListPage> {
   }
 
   Widget _buildDataListItem(int index, Activity item) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: ListTile(
-        leading: IconButton(icon: Icon(Icons.favorite_border), onPressed: null),
-        title: Text(
-          item.target_name.toString(),
-          style: TextStyle(color: Colors.black, fontSize: 20),
+    return Card(
+      margin: const EdgeInsets.all(4.0),
+      child: InkWell(
+        splashColor: Colors.red,
+        onTap: () {},
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              IconButton(icon: Icon(Icons.favorite_border), onPressed: () {}),
+              SizedBox(width: 6),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(
+                  item.target_name,
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+                SizedBox(height: 2),
+                Text(item.creation_date,
+                    style: TextStyle(color: Colors.grey, fontSize: 16)),
+                Text(item.date,
+                    style: TextStyle(color: Colors.grey, fontSize: 16))
+              ]),
+            ],
+          ),
         ),
-        subtitle: Text("${item.creation_date}\n${item.date}"),
       ),
     );
   }

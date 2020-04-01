@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body:
-            TabBarView(children: [ExoplanetsListaPage(), ActivitiesListPage()]),
+            TabBarView(children: [ExoplanetsListPage(), ActivitiesListPage()]),
       ),
     );
   }
