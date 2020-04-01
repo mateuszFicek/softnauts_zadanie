@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:zadanie_flutter_softnauts/bloc/activities_bloc.dart';
+import 'package:zadanie_flutter_softnauts/bloc/bloc_provider.dart';
+import 'package:zadanie_flutter_softnauts/bloc/exoplanets_bloc.dart';
+import 'package:zadanie_flutter_softnauts/models/activity.dart';
 import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 import 'package:zadanie_flutter_softnauts/ui/ActivitiesListPage.dart';
@@ -51,8 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body:
-            TabBarView(children: [ExoplanetsListPage(), ActivitiesListPage()]),
+        body: TabBarView(children: [
+          ExoplanetsListPage(),
+          ActivitiesListPage(),
+        ]),
       ),
     );
   }

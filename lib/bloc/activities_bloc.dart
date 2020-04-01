@@ -1,70 +1,39 @@
-import 'package:bloc/bloc.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:zadanie_flutter_softnauts/bloc/activities_event.dart';
+import 'dart:async';
+
+import 'package:rxdart/rxdart.dart';
+import 'package:zadanie_flutter_softnauts/bloc/bloc.dart';
 import 'package:zadanie_flutter_softnauts/models/activity.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
-class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivityState> {
-  final ActivitiesDataSource _dataSource;
-  BuiltList<Activity> activities;
+class ActivityQueryBloc implements Bloc {
+  final _controller = new BehaviorSubject<List<Activity>>();
+  List<Activity> activs = [];
+  List<Activity> searched = [];
 
-  ActivitiesBloc(this._dataSource);
+  final _client = ActivitiesDataSource();
+  Stream<List<Activity>> get locationStream => _controller;
+  ActivityQueryBloc() {
+    submitQuery();
+  }
+
+  void submitQuery() async {
+    final results = await _client.getActivities();
+    activs += results.toList();
+    _controller.sink.add(activs);
+  }
+
+  void search(String query) {
+    for (var activity in activs) {
+      if (activity.target_name.contains(query)) {
+        searched.add(activity);
+      }
+    }
+
+    _controller.sink.add(searched);
+  }
 
   @override
-  ActivityState get initialState => ActivityState.initial();
-
-  void getNextListPage() {
-    add(FetchNextPage());
+  void dispose() {
+    _controller.close();
   }
-
-  void getFirstListPage() {
-    add(FetchFirstPage());
-  }
-
-  void getDataWithQuery(String query) {
-    add(Search(query));
-  }
-
-  @override
-  Stream<ActivityState> mapEventToState(ActivitiesEvent event) async* {
-    if (event is FetchNextPage) {
-      try {
-        dynamic activs;
-        final nextPageItems = await _dataSource.getActivities();
-        if (activities.length > 0) {
-          activs = activities + nextPageItems;
-        } else {
-          activs = nextPageItems;
-        }
-        activities = activs;
-        yield ActivityState.success(activs);
-      } catch (e) {}
-    }
-
-    if (event is FetchFirstPage) {
-      try {
-        final firstPageItems = await _dataSource.getActivities();
-        activities = firstPageItems;
-        yield ActivityState.success(firstPageItems);
-      } catch (e) {}
-    }
-
-    if (event is Search) {
-      try {
-        BuiltList<Activity> plan = await _getSearchResults(event.query);
-        yield ActivityState.success(plan);
-      } catch (e) {}
-    }
-  }
-
-  Future<BuiltList<Activity>> _getSearchResults(String query) async {
-    List<Activity> searched = new List();
-    for (var activity in activities) {
-      if (activity.target_name.contains(query)) searched.add(activity);
-    }
-    BuiltList<Activity> nw = new BuiltList<Activity>(searched);
-    return nw;
-  }
-
-  void dispose() {}
 }

@@ -1,70 +1,40 @@
-import 'package:bloc/bloc.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:zadanie_flutter_softnauts/bloc/exoplanets_event.dart';
+import 'dart:async';
+
+import 'package:rxdart/rxdart.dart';
+import 'package:zadanie_flutter_softnauts/bloc/bloc.dart';
+import 'package:zadanie_flutter_softnauts/models/activity.dart';
 import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
-class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
-  final ExoplanetDataSource _dataSource;
+class ExoplanetQueryBloc implements Bloc {
+  final _controller = new BehaviorSubject<List<Planet>>();
+  List<Planet> planets = [];
+  List<Planet> searched = [];
 
-  BuiltList<Planet> planets;
+  final _client = ExoplanetDataSource();
+  Stream<List<Planet>> get exoplanetStream => _controller;
+  ExoplanetQueryBloc() {
+    submitQuery();
+  }
 
-  ExoplanetBloc(this._dataSource);
+  void submitQuery() async {
+    final results = await _client.getExoplanet();
+    planets += results.toList();
+    _controller.sink.add(planets);
+  }
+
+  void search(String query) {
+    for (var exoplanet in planets) {
+      if (exoplanet.name.contains(query)) {
+        searched.add(exoplanet);
+      }
+    }
+    _controller.sink.close();
+    _controller.sink.add(searched);
+  }
 
   @override
-  ExoplanetState get initialState => ExoplanetState.initial();
-
-  void getNextListPage() {
-    add(FetchNextPage());
+  void dispose() {
+    _controller.close();
   }
-
-  void getFirstListPage() {
-    add(FetchFirstPage());
-  }
-
-  void getDataWithQuery(String query) {
-    add(Search(query));
-  }
-
-  @override
-  Stream<ExoplanetState> mapEventToState(ExoplanetsEvent event) async* {
-    if (event is FetchNextPage) {
-      try {
-        dynamic plans;
-        print("FetchNext");
-        final nextPageItems = await _dataSource.getExoplanet();
-        if (planets.length > 0) {
-          plans = planets + nextPageItems;
-        } else {
-          plans = nextPageItems;
-        }
-        planets = plans;
-        yield ExoplanetState.success(plans);
-      } catch (e) {}
-    }
-    if (event is FetchFirstPage) {
-      try {
-        final firstPageItems = await _dataSource.getExoplanet();
-        planets = firstPageItems;
-        yield ExoplanetState.success(firstPageItems);
-      } catch (e) {}
-    }
-    if (event is Search) {
-      try {
-        BuiltList<Planet> plan = await _getSearchResults(event.query);
-        yield ExoplanetState.success(plan);
-      } catch (e) {}
-    }
-  }
-
-  Future<BuiltList<Planet>> _getSearchResults(String query) async {
-    List<Planet> searched = new List();
-    for (var planet in planets) {
-      if (planet.name.contains(query)) searched.add(planet);
-    }
-    BuiltList<Planet> nw = new BuiltList<Planet>(searched);
-    return nw;
-  }
-
-  void dispose() {}
 }

@@ -7,9 +7,7 @@ import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/models/serializers.dart';
 
 class ExoplanetDataSource {
-  static const int ITEMS_PER_PAGE = 20;
   int _shownPagesCount = 0;
-  BuiltList<Planet> planets;
 
   Future<BuiltList<Planet>> getExoplanet() async {
     _shownPagesCount++;
@@ -24,8 +22,6 @@ class ExoplanetDataSource {
 
 class ActivitiesDataSource {
   int _shownPagesCount = 0;
-
-  BuiltList<Activity> activities;
 
   Future<BuiltList<Activity>> getActivities() async {
     _shownPagesCount++;

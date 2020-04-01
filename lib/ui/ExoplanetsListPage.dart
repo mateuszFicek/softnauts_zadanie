@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:zadanie_flutter_softnauts/bloc/bloc_provider.dart';
 import 'package:zadanie_flutter_softnauts/bloc/exoplanets_bloc.dart';
 import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
-import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
 class ExoplanetsListPage extends StatefulWidget {
   @override
@@ -12,71 +10,76 @@ class ExoplanetsListPage extends StatefulWidget {
 
 class _ExoplanetsListPageState extends State<ExoplanetsListPage>
     with AutomaticKeepAliveClientMixin<ExoplanetsListPage> {
-  final _listBloc = ExoplanetBloc(ExoplanetDataSource());
   final _scrollController = ScrollController();
   TextEditingController editingController = TextEditingController();
+  final blocExoplanet = ExoplanetQueryBloc();
 
   @override
   bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
-    _listBloc.getFirstListPage();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _listBloc.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (value) {
-                _listBloc.getDataWithQuery(value);
-              },
-              controller: editingController,
-              decoration: InputDecoration(
-                  labelText: "Search",
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-            ),
+    return BlocProvider<ExoplanetQueryBloc>(
+      bloc: blocExoplanet,
+      child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            onChanged: (value) {
+              blocExoplanet.search(value);
+            },
+            controller: editingController,
+            decoration: InputDecoration(
+                labelText: "Search",
+                hintText: "Search",
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)))),
           ),
-          Expanded(
-            child: BlocBuilder(
-              bloc: _listBloc,
-              builder: (context, ExoplanetState state) {
-                if (state.results.length == 0) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  return NotificationListener<ScrollNotification>(
-                    onNotification: _handleScrollNotification,
-                    child: ListView.builder(
-                      itemCount: calculateListItemCount(state),
-                      controller: _scrollController,
-                      itemBuilder: (context, index) {
-                        return index >= state.results.length
-                            ? _buildLoaderListItem()
-                            : _buildDataListItem(
-                                index + 1, state.results[index]);
-                      },
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-        ],
+        ),
+        Expanded(child: _buildExoplanetStreamBuilder(blocExoplanet))
+      ]),
+    );
+  }
+
+  Widget _buildExoplanetStreamBuilder(ExoplanetQueryBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.exoplanetStream,
+      builder: (context, snapshot) {
+        final results = snapshot.data;
+        if (results == null) {
+          return Center(child: Text('Enter a restaurant name or cuisine type'));
+        }
+
+        if (results.isEmpty) {
+          return Center(child: Text('No Results'));
+        }
+
+        return _buildExoplanetSearchResults(results);
+      },
+    );
+  }
+
+  Widget _buildExoplanetSearchResults(List<Planet> results) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: _handleScrollNotification,
+      child: ListView.separated(
+        itemCount: results.length,
+        controller: _scrollController,
+        separatorBuilder: (context, index) => Divider(),
+        itemBuilder: (context, index) {
+          final restaurant = results[index];
+          return ListTile(title: Text(restaurant.name.toString()));
+        },
       ),
     );
   }
@@ -84,7 +87,7 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
   bool _handleScrollNotification(ScrollNotification notification) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0) {
-      _listBloc.getNextListPage();
+      blocExoplanet.submitQuery();
     }
 
     return false;

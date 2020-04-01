@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadanie_flutter_softnauts/bloc/activities_bloc.dart';
+import 'package:zadanie_flutter_softnauts/bloc/bloc_provider.dart';
 import 'package:zadanie_flutter_softnauts/models/activity.dart';
-import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 import 'package:zadanie_flutter_softnauts/ui/DetailPage.dart';
 
 class ActivitiesListPage extends StatefulWidget {
@@ -12,72 +11,59 @@ class ActivitiesListPage extends StatefulWidget {
 
 class _ActivitiesListPageState extends State<ActivitiesListPage>
     with AutomaticKeepAliveClientMixin<ActivitiesListPage> {
-  final _listBloc = ActivitiesBloc(ActivitiesDataSource());
   final _scrollController = ScrollController();
   TextEditingController editingController = TextEditingController();
+  final blocActivity = ActivityQueryBloc();
 
   @override
   bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
-    _listBloc.getFirstListPage();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _listBloc.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (value) {
-                _listBloc.getDataWithQuery(value);
-              },
-              controller: editingController,
-              decoration: InputDecoration(
-                  labelText: "Search",
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-            ),
-          ),
-          Expanded(
-            child: BlocBuilder(
-              bloc: _listBloc,
-              builder: (context, ActivityState state) {
-                if (state.results.length == 0) {
-                  print("Results are null");
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  return NotificationListener<ScrollNotification>(
-                    onNotification: _handleScrollNotification,
-                    child: ListView.builder(
-                      itemCount: calculateListItemCount(state),
-                      controller: _scrollController,
-                      itemBuilder: (context, index) {
-                        return index >= state.results.length
-                            ? _buildLoaderListItem()
-                            : _buildDataListItem(
-                                index + 1, state.results[index]);
-                      },
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-        ],
+    return BlocProvider<ActivityQueryBloc>(
+      bloc: blocActivity,
+      child: Container(child: _buildStreamBuilder(blocActivity)),
+    );
+  }
+
+  Widget _buildStreamBuilder(ActivityQueryBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.locationStream,
+      builder: (context, snapshot) {
+        final results = snapshot.data;
+        if (results == null) {
+          return Center(child: Text('Enter a restaurant name or cuisine type'));
+        }
+
+        if (results.isEmpty) {
+          return Center(child: Text('No Results'));
+        }
+
+        return _buildSearchResults(results);
+      },
+    );
+  }
+
+  Widget _buildSearchResults(List<Activity> results) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: _handleScrollNotification,
+      child: ListView.separated(
+        itemCount: results.length,
+        controller: _scrollController,
+        separatorBuilder: (context, index) => Divider(),
+        itemBuilder: (context, index) {
+          final activity = results[index];
+          return _buildDataListItem(index, activity);
+        },
       ),
     );
   }
@@ -85,7 +71,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   bool _handleScrollNotification(ScrollNotification notification) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0) {
-      _listBloc.getNextListPage();
+      blocActivity.submitQuery();
     }
 
     return false;
