@@ -14,6 +14,8 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
     with AutomaticKeepAliveClientMixin<ExoplanetsListPage> {
   final _listBloc = ExoplanetBloc(ExoplanetDataSource());
   final _scrollController = ScrollController();
+  TextEditingController editingController = TextEditingController();
+
   @override
   bool get wantKeepAlive => true;
   @override
@@ -31,28 +33,50 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder(
-        bloc: _listBloc,
-        builder: (context, ExoplanetState state) {
-          if (state.results.length == 0) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return NotificationListener<ScrollNotification>(
-              onNotification: _handleScrollNotification,
-              child: ListView.builder(
-                itemCount: calculateListItemCount(state),
-                controller: _scrollController,
-                itemBuilder: (context, index) {
-                  return index >= state.results.length
-                      ? _buildLoaderListItem()
-                      : _buildDataListItem(index + 1, state.results[index]);
-                },
-              ),
-            );
-          }
-        },
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (value) {
+                _listBloc.getDataWithQuery(value);
+              },
+              controller: editingController,
+              decoration: InputDecoration(
+                  labelText: "Search",
+                  hintText: "Search",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+            ),
+          ),
+          Expanded(
+            child: BlocBuilder(
+              bloc: _listBloc,
+              builder: (context, ExoplanetState state) {
+                if (state.results.length == 0) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return NotificationListener<ScrollNotification>(
+                    onNotification: _handleScrollNotification,
+                    child: ListView.builder(
+                      itemCount: calculateListItemCount(state),
+                      controller: _scrollController,
+                      itemBuilder: (context, index) {
+                        return index >= state.results.length
+                            ? _buildLoaderListItem()
+                            : _buildDataListItem(
+                                index + 1, state.results[index]);
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

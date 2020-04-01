@@ -21,15 +21,17 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivityState> {
     add(FetchFirstPage());
   }
 
+  void getDataWithQuery(String query) {
+    add(Search(query));
+  }
+
   @override
   Stream<ActivityState> mapEventToState(ActivitiesEvent event) async* {
     if (event is FetchNextPage) {
       try {
-        print("FetchNext");
         dynamic activs;
         final nextPageItems = await _dataSource.getActivities();
         if (activities.length > 0) {
-          print(activities.length);
           activs = activities + nextPageItems;
         } else {
           activs = nextPageItems;
@@ -41,12 +43,27 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivityState> {
 
     if (event is FetchFirstPage) {
       try {
-        print("FetchFirstActivities");
         final firstPageItems = await _dataSource.getActivities();
         activities = firstPageItems;
         yield ActivityState.success(firstPageItems);
       } catch (e) {}
     }
+
+    if (event is Search) {
+      try {
+        BuiltList<Activity> plan = await _getSearchResults(event.query);
+        yield ActivityState.success(plan);
+      } catch (e) {}
+    }
+  }
+
+  Future<BuiltList<Activity>> _getSearchResults(String query) async {
+    List<Activity> searched = new List();
+    for (var activity in activities) {
+      if (activity.target_name.contains(query)) searched.add(activity);
+    }
+    BuiltList<Activity> nw = new BuiltList<Activity>(searched);
+    return nw;
   }
 
   void dispose() {}

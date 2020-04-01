@@ -6,6 +6,7 @@ import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
 class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
   final ExoplanetDataSource _dataSource;
+
   BuiltList<Planet> planets;
 
   ExoplanetBloc(this._dataSource);
@@ -19,6 +20,10 @@ class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
 
   void getFirstListPage() {
     add(FetchFirstPage());
+  }
+
+  void getDataWithQuery(String query) {
+    add(Search(query));
   }
 
   @override
@@ -39,12 +44,26 @@ class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
     }
     if (event is FetchFirstPage) {
       try {
-        print("FetchFirst");
         final firstPageItems = await _dataSource.getExoplanet();
         planets = firstPageItems;
         yield ExoplanetState.success(firstPageItems);
       } catch (e) {}
     }
+    if (event is Search) {
+      try {
+        BuiltList<Planet> plan = await _getSearchResults(event.query);
+        yield ExoplanetState.success(plan);
+      } catch (e) {}
+    }
+  }
+
+  Future<BuiltList<Planet>> _getSearchResults(String query) async {
+    List<Planet> searched = new List();
+    for (var planet in planets) {
+      if (planet.name.contains(query)) searched.add(planet);
+    }
+    BuiltList<Planet> nw = new BuiltList<Planet>(searched);
+    return nw;
   }
 
   void dispose() {}
