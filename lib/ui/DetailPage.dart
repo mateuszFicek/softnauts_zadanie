@@ -25,14 +25,6 @@ class DetailPage extends StatelessWidget {
           item.date != null
               ? Text("Date: ${item.date.toString()}")
               : Container(),
-          item.links.isNotEmpty
-              ? ListView.builder(itemBuilder: (context, index) {
-                  return Column(children: [
-                    Text("Link title: ${item.links[index].title}"),
-                    Text("Link url: ${item.links[index].url}"),
-                  ]);
-                })
-              : Container(),
           item.title != ""
               ? Text("Title : ${item.title.toString()}")
               : Container(),
@@ -63,14 +55,6 @@ class DetailPage extends StatelessWidget {
                   Text("Identifier: ${item.programme.identifier}"),
                   Text(
                       "Investigators list: ${item.programme.investigators_list}"),
-                  item.programme.investigators.isNotEmpty
-                      ? ListView.builder(itemBuilder: (context, index) {
-                          return Column(children: [
-                            Text(
-                                "Investigator: ${item.programme.investigators[index]}"),
-                          ]);
-                        })
-                      : Container(),
                 ])
               : Container(),
           item.programme_type != ""
