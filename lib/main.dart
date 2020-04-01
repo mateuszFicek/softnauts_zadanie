@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadanie_flutter_softnauts/bloc/activities_bloc.dart';
+import 'package:zadanie_flutter_softnauts/bloc/exoplanets_bloc.dart';
 import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 import 'package:zadanie_flutter_softnauts/ui/ActivitiesListPage.dart';
@@ -27,9 +30,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  ExoplanetBloc _blocExo = ExoplanetBloc(ExoplanetDataSource());
+  ActivitiesBloc _blockAct = ActivitiesBloc(ActivitiesDataSource());
+
   @override
   void initState() {
     super.initState();
+    _blocExo.getFirstListPage();
+    _blockAct.getFirstListPage();
   }
 
   @override
@@ -51,8 +59,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body:
-            TabBarView(children: [ExoplanetsListPage(), ActivitiesListPage()]),
+        body: TabBarView(children: [
+          BlocProvider(
+              builder: (context) => _blocExo, child: ExoplanetsListPage()),
+          BlocProvider(
+              builder: (context) => _blockAct, child: ActivitiesListPage()),
+        ]),
       ),
     );
   }

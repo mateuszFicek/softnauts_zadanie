@@ -12,7 +12,8 @@ class ExoplanetsListPage extends StatefulWidget {
 
 class _ExoplanetsListPageState extends State<ExoplanetsListPage>
     with AutomaticKeepAliveClientMixin<ExoplanetsListPage> {
-  final _listBloc = ExoplanetBloc(ExoplanetDataSource());
+  ExoplanetBloc _bloc;
+
   final _scrollController = ScrollController();
   TextEditingController editingController = TextEditingController();
 
@@ -21,17 +22,18 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
   @override
   void initState() {
     super.initState();
-    _listBloc.getFirstListPage();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _listBloc.dispose();
+    _bloc.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    _bloc = BlocProvider.of<ExoplanetBloc>(context);
+
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -39,7 +41,7 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               onChanged: (value) {
-                _listBloc.getDataWithQuery(value);
+                _bloc.getDataWithQuery(value);
               },
               controller: editingController,
               decoration: InputDecoration(
@@ -52,7 +54,7 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
           ),
           Expanded(
             child: BlocBuilder(
-              bloc: _listBloc,
+              bloc: _bloc,
               builder: (context, ExoplanetState state) {
                 if (state.results.length == 0) {
                   return Center(
@@ -84,7 +86,7 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
   bool _handleScrollNotification(ScrollNotification notification) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0) {
-      _listBloc.getNextListPage();
+      _bloc.getNextListPage();
     }
 
     return false;

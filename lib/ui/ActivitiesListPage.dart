@@ -12,7 +12,7 @@ class ActivitiesListPage extends StatefulWidget {
 
 class _ActivitiesListPageState extends State<ActivitiesListPage>
     with AutomaticKeepAliveClientMixin<ActivitiesListPage> {
-  final _listBloc = ActivitiesBloc(ActivitiesDataSource());
+  ActivitiesBloc _bloc;
   final _scrollController = ScrollController();
   TextEditingController editingController = TextEditingController();
 
@@ -21,17 +21,17 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   @override
   void initState() {
     super.initState();
-    _listBloc.getFirstListPage();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _listBloc.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    _bloc = BlocProvider.of<ActivitiesBloc>(context);
+
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -39,7 +39,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               onChanged: (value) {
-                _listBloc.getDataWithQuery(value);
+                _bloc.getDataWithQuery(value);
               },
               controller: editingController,
               decoration: InputDecoration(
@@ -52,7 +52,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
           ),
           Expanded(
             child: BlocBuilder(
-              bloc: _listBloc,
+              bloc: _bloc,
               builder: (context, ActivityState state) {
                 if (state.results.length == 0) {
                   return Center(
@@ -84,7 +84,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   bool _handleScrollNotification(ScrollNotification notification) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0) {
-      _listBloc.getNextListPage();
+      _bloc.getNextListPage();
     }
 
     return false;
