@@ -15,7 +15,6 @@ class DetailPage extends StatelessWidget {
         ],
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           item.id != null ? Text("ID : ${item.id.toString()}") : Container(),
