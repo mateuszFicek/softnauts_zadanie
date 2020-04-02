@@ -9,10 +9,10 @@ class FavoriteBloc extends Bloc<FavoriteEvent, int> {
   @override
   int get initialState => 0;
 
-  StreamController<int> _presetsController = new BehaviorSubject();
-  StreamSink<int> get _inCounter => _presetsController.sink;
+  StreamController<int> _favoriteController = new BehaviorSubject();
+  StreamSink<int> get _inCounter => _favoriteController.sink;
 
-  Stream<int> get isFav => _presetsController.stream;
+  Stream<int> get isFav => _favoriteController.stream;
 
   final _isFavoriedEventController = StreamController<FavoriteEvent>();
   Sink<FavoriteEvent> get isFavoriedEventSink =>
@@ -42,6 +42,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, int> {
 
   void dispose() {
     _isFavoriedEventController.close();
-    _presetsController.close();
+    _favoriteController.close();
   }
 }

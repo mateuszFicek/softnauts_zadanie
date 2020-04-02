@@ -6,6 +6,13 @@ import './exoplanet.dart';
 
 part 'serializers.g.dart';
 
-@SerializersFor(const [ExoplanetState, ActivityState])
+@SerializersFor(const [
+  ExoplanetState,
+  ActivityState,
+  Programme,
+  ActivityLink,
+  Coords,
+  Person
+])
 final Serializers serializers =
     (_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();

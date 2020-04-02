@@ -31,7 +31,6 @@ class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
     if (event is FetchNextPage) {
       try {
         dynamic plans;
-        print("FetchNext");
         final nextPageItems = await _dataSource.getExoplanet();
         if (planets.length > 0) {
           plans = planets + nextPageItems;
