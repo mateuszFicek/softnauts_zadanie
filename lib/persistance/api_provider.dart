@@ -7,7 +7,6 @@ import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/models/serializers.dart';
 
 class ExoplanetDataSource {
-  static const int ITEMS_PER_PAGE = 20;
   int _shownPagesCount = 0;
   BuiltList<Planet> planets;
 
@@ -24,12 +23,10 @@ class ExoplanetDataSource {
 
 class ActivitiesDataSource {
   int _shownPagesCount = 0;
-
   BuiltList<Activity> activities;
 
   Future<BuiltList<Activity>> getActivities() async {
     _shownPagesCount++;
-
     final _activitiesUrl =
         "https://api.arcsecond.io/activities/?page_size=20&page=$_shownPagesCount&format=json";
     final response = await http.get(Uri.parse(_activitiesUrl));

@@ -17,8 +17,8 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final x = serializers.serialize(item);
-    final Map<String, dynamic> data = json.decode(json.encode(x));
+    final serializedData = serializers.serialize(item);
+    final Map<String, dynamic> data = json.decode(json.encode(serializedData));
 
     return StreamBuilder<Object>(
         stream: bloc.isFav,
@@ -58,30 +58,26 @@ class DetailPage extends StatelessWidget {
                     String key = data.keys.elementAt(index);
                     if (data[key] == "") return Container();
                     if (key == "programme") {
-                      final x = serializers.serialize(item.programme);
+                      final programmeData =
+                          serializers.serialize(item.programme);
                       final Map<String, dynamic> data =
-                          json.decode(json.encode(x));
+                          json.decode(json.encode(programmeData));
+                      return listView(data);
                     }
                     if (key == "coordinates" && data[key] != null) {
-                      final x = serializers.serialize(item.coordinates);
+                      final coordsData =
+                          serializers.serialize(item.coordinates);
                       final Map<String, dynamic> data =
-                          json.decode(json.encode(x));
+                          json.decode(json.encode(coordsData));
                       return listView(data);
                     }
-                    if (key == "programme" && data[key] != null) {
-                      final x = serializers.serialize(item.programme);
-                      final Map<String, dynamic> data =
-                          json.decode(json.encode(x));
-                      return listView(data);
-                    }
-
                     if (key == "links") {
                       if (item.links.isEmpty) {
                         return Container();
                       }
-                      final x = serializers.serialize(item.links);
+                      final linksData = serializers.serialize(item.links);
                       final Map<String, dynamic> data =
-                          json.decode(json.encode(x));
+                          json.decode(json.encode(linksData));
                       return listView(data);
                     }
                     return new Column(

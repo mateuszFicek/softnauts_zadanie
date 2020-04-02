@@ -81,6 +81,7 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
     );
   }
 
+  // Function to control scrolling to bottom of screen.
   bool _handleScrollNotification(ScrollNotification notification) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0) {
