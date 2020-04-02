@@ -8,14 +8,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  chopper: ^3.0.2
   intl: ^0.16.1
   cupertino_icons: ^0.1.2
   provider:
   built_value:
   built_collection:
   flutter_bloc: ^1.0.0
-  kiwi:
   rxdart:
 
 dev_dependencies:

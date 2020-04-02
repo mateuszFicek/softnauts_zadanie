@@ -17,6 +17,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   ActivitiesBloc _bloc;
   final _scrollController = ScrollController();
   TextEditingController editingController = TextEditingController();
+  List<FavoriteBloc> _favBloc = [];
 
   @override
   bool get wantKeepAlive => true;
@@ -29,6 +30,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   void dispose() {
     super.dispose();
     _bloc.dispose();
+    _favBloc.map((e) => e.dispose());
   }
 
   @override
@@ -68,10 +70,10 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
                       itemCount: calculateListItemCount(state),
                       controller: _scrollController,
                       itemBuilder: (context, index) {
+                        _favBloc.add(FavoriteBloc());
                         return index >= state.results.length
                             ? _buildLoaderListItem()
-                            : _buildDataListItem(
-                                index + 1, state.results[index]);
+                            : _buildDataListItem(index, state.results[index]);
                       },
                     ),
                   );
@@ -104,9 +106,8 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   }
 
   Widget _buildDataListItem(int index, Activity item) {
-    FavoriteBloc _favBloc = FavoriteBloc();
     return BlocProvider(
-      builder: (context) => _favBloc,
+      builder: (context) => _favBloc[index],
       child: Card(
         margin: const EdgeInsets.all(4.0),
         child: InkWell(
@@ -115,15 +116,15 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        DetailPage(item: item, index: index, bloc: _favBloc)));
+                    builder: (context) => DetailPage(
+                        item: item, index: index, bloc: _favBloc[index])));
           },
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
                 StreamBuilder<Object>(
-                    stream: _favBloc.isFav,
+                    stream: _favBloc[index].isFav,
                     initialData: 0,
                     builder: (context, snapshot) {
                       return IconButton(
@@ -131,7 +132,9 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
                               ? Icons.favorite_border
                               : Icons.favorite),
                           onPressed: () {
-                            _favBloc.isFavoriedEventSink.add(ToggleFavorite());
+                            _favBloc[index]
+                                .isFavoriedEventSink
+                                .add(ToggleFavorite());
                           });
                     }),
                 SizedBox(width: 10),

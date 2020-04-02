@@ -4,6 +4,7 @@ import 'package:zadanie_flutter_softnauts/bloc/exoplanets_event.dart';
 import 'package:zadanie_flutter_softnauts/models/exoplanet.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
+// BLoC class for managing Exoplanets list.
 class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
   final ExoplanetDataSource _dataSource;
 
@@ -26,6 +27,7 @@ class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
     add(Search(query));
   }
 
+  // Mapping Events to State
   @override
   Stream<ExoplanetState> mapEventToState(ExoplanetsEvent event) async* {
     if (event is FetchNextPage) {
@@ -56,13 +58,14 @@ class ExoplanetBloc extends Bloc<ExoplanetsEvent, ExoplanetState> {
     }
   }
 
+  // Function that returns List of Planets that match query.
   Future<BuiltList<Planet>> _getSearchResults(String query) async {
     List<Planet> searched = new List();
     for (var planet in planets) {
       if (planet.name.contains(query)) searched.add(planet);
     }
-    BuiltList<Planet> nw = new BuiltList<Planet>(searched);
-    return nw;
+    BuiltList<Planet> searchedList = new BuiltList<Planet>(searched);
+    return searchedList;
   }
 
   void dispose() {}

@@ -4,6 +4,7 @@ import 'package:zadanie_flutter_softnauts/bloc/activities_event.dart';
 import 'package:zadanie_flutter_softnauts/models/activity.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 
+// BLoC class for managing Activities list.
 class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivityState> {
   final ActivitiesDataSource _dataSource;
   BuiltList<Activity> activities;
@@ -25,6 +26,7 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivityState> {
     add(Search(query));
   }
 
+  // Mapping Events to State
   @override
   Stream<ActivityState> mapEventToState(ActivitiesEvent event) async* {
     if (event is FetchNextPage) {
@@ -57,13 +59,14 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivityState> {
     }
   }
 
+  // Function that returns List of Activities that match query.
   Future<BuiltList<Activity>> _getSearchResults(String query) async {
     List<Activity> searched = new List();
     for (var activity in activities) {
       if (activity.target_name.contains(query)) searched.add(activity);
     }
-    BuiltList<Activity> nw = new BuiltList<Activity>(searched);
-    return nw;
+    BuiltList<Activity> searchedList = new BuiltList<Activity>(searched);
+    return searchedList;
   }
 
   void dispose() {}

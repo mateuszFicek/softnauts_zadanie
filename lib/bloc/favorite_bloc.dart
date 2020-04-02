@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zadanie_flutter_softnauts/bloc/favorite_event.dart';
 
+// BLoC class for managing
 class FavoriteBloc extends Bloc<FavoriteEvent, int> {
   int isFavoried = 0;
   @override
