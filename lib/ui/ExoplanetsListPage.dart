@@ -27,7 +27,6 @@ class _ExoplanetsListPageState extends State<ExoplanetsListPage>
   @override
   void dispose() {
     super.dispose();
-    _bloc.dispose();
   }
 
   @override

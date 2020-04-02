@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadanie_flutter_softnauts/bloc/activities_bloc.dart';
+import 'package:zadanie_flutter_softnauts/bloc/favorite_bloc.dart';
+import 'package:zadanie_flutter_softnauts/bloc/favorite_event.dart';
 import 'package:zadanie_flutter_softnauts/models/activity.dart';
 import 'package:zadanie_flutter_softnauts/persistance/api_provider.dart';
 import 'package:zadanie_flutter_softnauts/ui/DetailPage.dart';
@@ -26,6 +28,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   @override
   void dispose() {
     super.dispose();
+    _bloc.dispose();
   }
 
   @override
@@ -101,37 +104,55 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
   }
 
   Widget _buildDataListItem(int index, Activity item) {
-    return Card(
-      margin: const EdgeInsets.all(4.0),
-      child: InkWell(
-        splashColor: Colors.red,
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DetailPage(item: item, index: index)));
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              IconButton(icon: Icon(Icons.favorite_border), onPressed: () {}),
-              SizedBox(width: 10),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  item.target_name != "" ? item.target_name : "No name given..",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.black, fontSize: 20),
-                ),
-                SizedBox(height: 2),
-                Text(item.creation_date,
+    FavoriteBloc _favBloc = FavoriteBloc();
+    return BlocProvider(
+      builder: (context) => _favBloc,
+      child: Card(
+        margin: const EdgeInsets.all(4.0),
+        child: InkWell(
+          splashColor: Colors.red,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DetailPage(item: item, index: index)));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              children: [
+                StreamBuilder<Object>(
+                    stream: _favBloc.isFav,
+                    initialData: 0,
+                    builder: (context, snapshot) {
+                      return IconButton(
+                          icon: Icon(snapshot.data == 0
+                              ? Icons.favorite_border
+                              : Icons.favorite),
+                          onPressed: () {
+                            _favBloc.isFavoriedEventSink.add(ToggleFavorite());
+                          });
+                    }),
+                SizedBox(width: 10),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    item.target_name != ""
+                        ? item.target_name
+                        : "No name given..",
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.grey, fontSize: 16)),
-                Text(item.date,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.grey, fontSize: 16))
-              ]),
-            ],
+                    style: TextStyle(color: Colors.black, fontSize: 20),
+                  ),
+                  SizedBox(height: 2),
+                  Text(item.creation_date,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  Text(item.date,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.grey, fontSize: 16))
+                ]),
+              ],
+            ),
           ),
         ),
       ),
