@@ -16,6 +16,7 @@ dependencies:
   built_collection:
   flutter_bloc: ^1.0.0
   kiwi:
+  rxdart:
 
 dev_dependencies:
   flutter_test:

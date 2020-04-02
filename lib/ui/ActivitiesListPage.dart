@@ -116,7 +116,7 @@ class _ActivitiesListPageState extends State<ActivitiesListPage>
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        DetailPage(item: item, index: index)));
+                        DetailPage(item: item, index: index, bloc: _favBloc)));
           },
           child: Padding(
             padding: const EdgeInsets.all(12.0),

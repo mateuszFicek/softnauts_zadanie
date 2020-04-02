@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:zadanie_flutter_softnauts/bloc/favorite_event.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvent, int> {
@@ -8,11 +9,10 @@ class FavoriteBloc extends Bloc<FavoriteEvent, int> {
   @override
   int get initialState => 0;
 
-  final _isFavoriedStateController = StreamController<int>();
-  StreamSink<int> get _inCounter => _isFavoriedStateController.sink;
+  StreamController<int> _presetsController = new BehaviorSubject();
+  StreamSink<int> get _inCounter => _presetsController.sink;
 
-  Stream<int> get isFav =>
-      _isFavoriedStateController.stream.asBroadcastStream();
+  Stream<int> get isFav => _presetsController.stream;
 
   final _isFavoriedEventController = StreamController<FavoriteEvent>();
   Sink<FavoriteEvent> get isFavoriedEventSink =>
@@ -42,6 +42,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, int> {
 
   void dispose() {
     _isFavoriedEventController.close();
-    _isFavoriedStateController.close();
+    _presetsController.close();
   }
 }
